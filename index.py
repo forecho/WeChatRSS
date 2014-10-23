@@ -11,18 +11,20 @@ def getHtml(url, type):
     if type == 1:
         title = re.compile('<a class="question_link" href="(.*)" .* target="_blank">\\n*(.*)\\n*</a>')
     elif type == 2:
-        title = re.compile('<div class="rich_media_content" id="js_content">\\n*(.*)\\n*</div>')
+        # title = re.compile('<div class="rich_media_inner">\\n*<h2 .*>(.*)</h2> <em id="post-date" class="rich_media_meta text">(.*)</em> <div class="rich_media_content" id="js_content">\\n*(.*)\\n*</div>')
+        title = re.compile('<div class="rich_media_inner">.*<em id="post-date" class="rich_media_meta text">(.*?)</em>.*<a class="rich_media_meta link nickname" href=".*" id="post-user">(.*)</a>.*<div class="rich_media_content" id="js_content">\\n*(.*)\\n*</div>')
     elif type == 3:
         title = re.compile('<strong>...</strong>\\n*&nbsp;\\n*<a href=".*">(.*)</a>')
     return re.findall(title, content)
 
-def savePost(title, wechat, content):
+def savePost(title, author, postCreated, wechat, postContent):
     conn= MySQLdb.connect(
             host='localhost',
             port = 3306,
             user='root',
             passwd='',
-            db ='test',
+            db ='wechat_rss',
+            use_unicode=1,
             charset="utf8"
         )
     # 使用cursor()方法获取操作游标
@@ -35,11 +37,12 @@ def savePost(title, wechat, content):
         # 表不存在则创建表
         cur.execute("""
             CREATE TABLE IF NOT EXISTS `posts` (
-                `id` INT(11),
-                `title` VARCHAR(50),
+                `id` INT(11) NOT NULL AUTO_INCREMENT,
+                `title` VARCHAR(200),
                 `author` VARCHAR(50),
-                `wechat` VARCHAR(10),
+                `wechat` VARCHAR(50),
                 `content` TEXT,
+                `post_created` DATE,
                 `created` DATE,
                 PRIMARY KEY (`id`)
             )
@@ -54,8 +57,7 @@ def savePost(title, wechat, content):
     #     ])
     #插入一条数据
     today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-    cur.execute("INSERT INTO posts VALUES('', %s, '深度阅读', %s, %s, %s)",(
-        title, wechat, content, today))
+    cur.execute("INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, %s, %s)", (title, author, wechat, postContent, postCreated, today))
 
     #修改查询条件的数据
     # cur.execute("update student set class='3 year 1 class' where name = 'Tom'")
@@ -67,22 +69,35 @@ def savePost(title, wechat, content):
     conn.commit()
     conn.close()
 
-wechat = 'givemesomefood'
+wechat = 'readeep'
 # 获取总页数
 url = "http://chuansongme.com/account/%s?start=%d"
-u = url % (wechat, 0)
-page = getHtml(u, 3)
+pageUrl = url % (wechat, 0)
+page = getHtml(pageUrl, 3)
+if page:
+    pageCount = int(page[0]) + 1
+else:
+    pageCount = 10
 
-# for p in xrange(0, int(page[0])+1):
-for p in xrange(0, 1):
+for index in xrange(0, pageCount):
     # 获取标题
-    u = url % (wechat, 0*12)
-    page = getHtml(u, 1)
-    if p<12:
+    pageUrl = url % (wechat, index*12)
+    page = getHtml(pageUrl, 1)
+
+    for titleIndex in page:
         # 获取内容
-        contentUrl = "http://chuansongme.com" + page[p][0]
+        contentUrl = "http://chuansongme.com" + titleIndex[0]
         print contentUrl
-        title = page[p][1]
+        title = titleIndex[1]
         content = getHtml(contentUrl, 2)
-        print content = json.dumps(content, ensure_ascii=False, indent=2)
-        savePost(title, wechat, content)
+        if content:
+            postCreated = content[0][0]
+            author = content[0][1]
+            postContent = content[0][2]
+            if postCreated and author and postContent:
+                print '抓取标题「%s」成功，正在保存数据库……' % title
+                # 保存数据库
+                savePost(title, author, postCreated, wechat, postContent)
+        else:
+            print '---------------抓取标题「%s」失败' % title
+
