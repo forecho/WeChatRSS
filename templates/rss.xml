@@ -1,0 +1,20 @@
+{{ data }}
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0"  xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+	　　<link>http://www.forecho.com</link>
+	　　<description>三个朋友之家</description>
+	　　<copyright>Copyright 2003-2014, forecho.com</copyright>
+	　　<language>zh-CN</language>
+	　　<pubDate>发布的时间</pubDate>
+	　　<lastBuildDate>最后更新的时间</lastBuildDate>
+		{% for info in list %}
+		<item>
+			<title>{{ info.title }}</title>
+			<author>{{ info.title }}</author>
+			<pubDate>{{ info.title }}</pubDate>
+			<description>{{ info.content }}</description>
+		</item>
+		{% endfor %}
+	</channel>
+</rss>
