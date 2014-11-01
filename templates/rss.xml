@@ -1,4 +1,3 @@
-{{ data }}
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0"  xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
@@ -8,11 +7,11 @@
 	　　<language>zh-CN</language>
 	　　<pubDate>发布的时间</pubDate>
 	　　<lastBuildDate>最后更新的时间</lastBuildDate>
-		{% for info in list %}
+		{% for info in data %}
 		<item>
 			<title>{{ info.title }}</title>
-			<author>{{ info.title }}</author>
-			<pubDate>{{ info.title }}</pubDate>
+			<author>{{ info.author }}</author>
+			<pubDate>{{ info.post_created }}</pubDate>
 			<description>{{ info.content }}</description>
 		</item>
 		{% endfor %}

@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 from flask import Flask, request, render_template
-from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL, MySQLdb
 
 app = Flask(__name__)
 
@@ -24,15 +24,14 @@ def signin_form():
 
 @app.route('/<wechat>/feed', methods=['GET'])
 def feed(wechat):
-    cursor = mysql.connect().cursor()
-    cursor.execute("SELECT * from posts where wechat='" + wechat + "'")
+    cursor = mysql.connect().cursor(cursorclass=MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM posts WHERE wechat=%s ORDER BY post_created DESC", wechat)
     data = cursor.fetchall()
 
     if data is None:
-        return "Username or Password is wrong"
+        return "暂无文章"
     else:
         print data
-        # return "Logged in successfully"
         return render_template('rss.xml', wechat=wechat, data=data)
 
 @app.route('/signin', methods=['POST'])
