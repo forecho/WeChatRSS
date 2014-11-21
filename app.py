@@ -13,11 +13,12 @@ app.config['MYSQL_DATABASE_DB'] = 'wechat_rss'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
-
+# 示例
 @app.route('/', methods=['GET', 'POST'])
 def home():
     return render_template('home.html')
 
+# 示例
 @app.route('/signin', methods=['GET'])
 def signin_form():
     return render_template('form.html')
@@ -34,6 +35,7 @@ def feed(wechat):
         print data
         return render_template('rss.xml', wechat=wechat, data=data)
 
+# 示例
 @app.route('/signin', methods=['POST'])
 def signin():
     username = request.form['username']
