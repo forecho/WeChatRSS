@@ -8,7 +8,7 @@
 1. [Flask-MySQL](http://flask-mysql.readthedocs.org/en/latest/) 扩展
 1. MySQLdb 库
 1. [Requests: HTTP for Humans](http://requests.readthedocs.org/zh_CN/latest/user/install.html#install)
-1 .[xmltodict](https://github.com/martinblech/xmltodict)
+1. [xmltodict](https://github.com/martinblech/xmltodict) 解析XML
 
 **安装**
 
