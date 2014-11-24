@@ -2,7 +2,13 @@
 # -*- coding: utf-8 -*-
 import sys, MySQLdb, time
 
-def save_post(title, author, postCreated, wechat, postContent):
+def save_post(title, author, post_created, wechat, post_content):
+    print title
+    print author
+    print post_created
+    print wechat
+    print post_content
+    # exit()
     conn= MySQLdb.connect(
             host='localhost',
             port = 3306,
@@ -42,7 +48,7 @@ def save_post(title, author, postCreated, wechat, postContent):
     #     ])
     #插入一条数据
     today = time.strftime('%Y-%m-%d',time.localtime(time.time()))
-    cur.execute("INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, %s, %s)", (title, author, wechat, postContent, postCreated, today))
+    cur.execute("INSERT INTO posts VALUES(NULL, %s, %s, %s, %s, %s, %s)", (title, author, wechat, post_content, post_created, today))
 
     #修改查询条件的数据
     # cur.execute("update student set class='3 year 1 class' where name = 'Tom'")

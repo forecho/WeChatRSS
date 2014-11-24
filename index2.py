@@ -40,13 +40,19 @@ class Weixin():
 		    f['creator'] = item['DOCUMENT']['item']['display']['sourcename']
 
 		    pubdate = time.localtime(float(item['DOCUMENT']['item']['display']['lastModified']))
-		    f['pubDate'] = time.strftime("%Y-%m-%d %H:%M:%S", pubdate)
+		    f['pubDate'] = time.strftime("%Y-%m-%d", pubdate)
+		    # f['pubDate'] = time.strftime("%Y-%m-%d %H:%M:%S", pubdate)
 		    print '开始爬取正文……'
 		    f['content'] = self.get_content(f['link'])
 		    print '开始保存数据库……'
-		    model.save_post(f['title'], f['creator'], f['pubDate'], 'readeep', f['content'])
-		    print f
-		    exit()
+		    if f['content']:
+		    	model.save_post(f['title'], f['creator'], f['pubDate'], 'readeep', f['content'])
+		    	print '%s保存成功' % unicode(f['title']).encode('utf-8')
+		    else:
+		    	print '-------%s保存失败' % unicode(f['title']).encode('utf-8')
+
+		    # print f
+		    # exit()
 		    # f.feed['item'].append(f.item.copy())
 
 
