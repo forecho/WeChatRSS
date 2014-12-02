@@ -20,3 +20,8 @@
 2. `sudo pip install flask-mysql`
 2. `sudo pip install requests`
 2. `sudo pip install xmltodict`
+
+
+**初始化**
+
+1. 修改 sql.py 文件配置，执行 `python sql.py`
