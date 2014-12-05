@@ -44,12 +44,11 @@ class Weixin():
 		    # f['pubDate'] = time.strftime("%Y-%m-%d %H:%M:%S", pubdate)
 		    print '开始爬取正文……'
 		    f['content'] = self.get_content(f['link'])
-		    print '开始保存数据库……'
+		    print '准备保存数据库……'
 		    if f['content']:
 		    	model.save_post(f['title'], f['creator'], f['pubDate'], 'readeep', f['content'])
-		    	print '%s保存成功' % unicode(f['title']).encode('utf-8')
 		    else:
-		    	print '-------%s保存失败' % unicode(f['title']).encode('utf-8')
+		    	print '-------《%s》文章正文抓取失败' % unicode(f['title']).encode('utf-8')
 
 		    # print f
 		    # exit()
